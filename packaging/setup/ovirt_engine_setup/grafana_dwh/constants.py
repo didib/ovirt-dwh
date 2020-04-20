@@ -44,6 +44,7 @@ DEK = oengcommcons.DBEnvKeysConst
 @util.export
 @util.codegen
 class Const(object):
+    SERVICE_NAME = 'grafana-server'
     OVIRT_ENGINE_GRAFANA_DWH_SETUP_PACKAGE_NAME = \
         'ovirt-engine-dwh-grafana-integration-setup'
 
@@ -138,7 +139,8 @@ class CoreEnv(object):
 @util.codegen
 @osetupattrsclass
 class ConfigEnv(object):
-    pass
+    GRAFANA_SERVICE_STOP_NEEDED = \
+        'OVESETUP_GRAFANA_CONFIG/grafanaServiceStopNeeded'
 
 
 @util.export
