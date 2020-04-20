@@ -107,10 +107,15 @@ class FileLocations(object):
     GRAFANA_SYSCONF_DIR = config.GRAFANA_SYSCONF_DIR
     GRAFANA_STATE_DIR = config.GRAFANA_STATE_DIR
     GRAFANA_DATA_DIR = config.GRAFANA_DATA_DIR
+    PKG_DATA_DIR = config.PKG_DATA_DIR
 
     GRAFANA_CONFIG_FILE = os.path.join(
         GRAFANA_SYSCONF_DIR,
         'grafana.ini',
+    )
+    GRAFANA_CONFIG_FILE_TEMPLATE = os.path.join(
+        PKG_DATA_DIR,
+        'grafana.ini.in',
     )
 
 
@@ -141,6 +146,13 @@ class CoreEnv(object):
 class ConfigEnv(object):
     GRAFANA_SERVICE_STOP_NEEDED = \
         'OVESETUP_GRAFANA_CONFIG/grafanaServiceStopNeeded'
+
+    @osetupattrs(
+        answerfile=True,
+        is_secret=True,
+    )
+    def ADMIN_PASSWORD(self):
+        return 'OVESETUP_GRAFANA_CONFIG/adminPassword'
 
 
 @util.export

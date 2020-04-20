@@ -22,8 +22,11 @@ import gettext
 from otopi import util
 from otopi import plugin
 
+from ovirt_engine import util as outil
+
 from ovirt_engine_setup.engine import constants as oenginecons
 from ovirt_engine_setup import constants as osetupcons
+from ovirt_engine_setup import util as osetuputil
 from ovirt_engine_setup.grafana_dwh import constants as ogdwhcons
 from ovirt_setup_lib import dialog
 
@@ -39,11 +42,92 @@ class Plugin(plugin.PluginBase):
         super(Plugin, self).__init__(context=context)
 
     @plugin.event(
+        stage=plugin.Stages.STAGE_INIT,
+    )
+    def _init(self):
+        self.environment.setdefault(
+            ogdwhcons.ConfigEnv.ADMIN_PASSWORD,
+            None
+        )
+
+    @plugin.event(
+        stage=plugin.Stages.STAGE_CUSTOMIZATION,
+        before=(
+            osetupcons.Stages.DIALOG_TITLES_E_MISC,
+        ),
+        after=(
+            osetupcons.Stages.DIALOG_TITLES_S_MISC,
+        ),
+        condition=lambda self: (
+            self.environment[ogdwhcons.ConfigEnv.ADMIN_PASSWORD] is None and
+            self.environment[ogdwhcons.CoreEnv.ENABLE]
+        ),
+    )
+    def _customization_admin_password(self):
+        password = None
+        if self.environment[oenginecons.ConfigEnv.ADMIN_PASSWORD]:
+            use_engine_admin_password = dialog.queryBoolean(
+                dialog=self.dialog,
+                name='GRAFANA_USE_ENGINE_ADMIN_PASSWORD',
+                note=_(
+                    'Use Engine admin password for Grafana admin '
+                    '(@VALUES@) [@DEFAULT@]: '
+                ),
+                prompt=True,
+                default=True
+            )
+            if use_engine_admin_password:
+                password = self.environment[
+                    oenginecons.ConfigEnv.ADMIN_PASSWORD
+                ]
+        if password is None:
+            password = dialog.queryPassword(
+                dialog=self.dialog,
+                logger=self.logger,
+                env=self.environment,
+                key=ogdwhcons.ConfigEnv.ADMIN_PASSWORD,
+                note=_(
+                    'Grafana admin password: '
+                ),
+            )
+        self.environment[ogdwhcons.ConfigEnv.ADMIN_PASSWORD] = password
+
+    @plugin.event(
         stage=plugin.Stages.STAGE_MISC,
         condition=lamda self: self.environment[ogdwhcons.CoreEnv.ENABLE],
     )
     def _misc_grafana_config(self):
-        pass
+        uninstall_files = []
+        self.environment[
+            osetupcons.CoreEnv.REGISTER_UNINSTALL_GROUPS
+        ].addFiles(
+            group='ovirt_grafana_files',
+            fileList=uninstall_files,
+        )
+        self.environment[otopicons.CoreEnv.MAIN_TRANSACTION].append(
+            filetransaction.FileTransaction(
+                name=(
+                    ogdwhcons.FileLocations.
+                    GRAFANA_CONFIG_FILE
+                ),
+                mode=0o640,
+                owner='root',
+                group='grafana',
+                enforcePermissions=True,
+                content=outil.processTemplate(
+                    template=(
+                        ogdwhcons.FileLocations.
+                        GRAFANA_CONFIG_FILE_TEMPLATE
+                    ),
+                    subst={
+                        '@ADMIN_PASSWORD@': self.environment[
+                            ogdwhcons.ConfigEnv.ADMIN_PASSWORD
+                        ],
+                    },
+                )
+                modifiedList=uninstall_files,
+            )
+        )
 
 
 # vim: expandtab tabstop=4 shiftwidth=4
