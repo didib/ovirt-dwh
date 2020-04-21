@@ -84,8 +84,8 @@ class Const(object):
 @util.codegen
 class Defaults(object):
     DEFAULT_ADDITIONAL_PACKAGES = (
-        'grafana',
-        'grafana-postgres',
+        'grafana'
+        ',grafana-postgres',
     )
 
 
