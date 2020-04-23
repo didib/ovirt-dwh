@@ -132,6 +132,7 @@ class DWHDefaults(object):
     DEFAULT_DB_SECURED = False
     DEFAULT_DB_SECURED_HOST_VALIDATION = False
 
+
 @util.export
 @util.codegen
 class GrafanaDefaults(object):
@@ -284,6 +285,7 @@ class DWHDBEnv(object):
     )
     def RESTORE_JOBS(self):
         return 'OVESETUP_DWH_DB/restoreJobs'
+
 
 @util.export
 @util.codegen

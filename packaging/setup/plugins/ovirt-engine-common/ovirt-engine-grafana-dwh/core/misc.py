@@ -23,7 +23,6 @@ from otopi import util
 from otopi import plugin
 
 
-from ovirt_engine_setup.engine import constants as oenginecons
 from ovirt_engine_setup import constants as osetupcons
 from ovirt_engine_setup.grafana_dwh import constants as ogdwhcons
 

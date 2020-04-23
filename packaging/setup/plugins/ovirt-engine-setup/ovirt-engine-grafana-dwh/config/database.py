@@ -50,7 +50,7 @@ class Plugin(plugin.PluginBase):
             odwhcons.Stages.DB_SCHEMA,
         ),
         condition=lambda self: (
-            self.environment[ogdwhcons.CoreEnv.ENABLE] and
+            self.environment[ogdwhcons.CoreEnv.ENABLE]
         ),
     )
     def _misc(self):

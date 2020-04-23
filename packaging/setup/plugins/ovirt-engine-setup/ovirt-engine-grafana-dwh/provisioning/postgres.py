@@ -27,11 +27,8 @@ from otopi import util
 from ovirt_engine_setup import constants as osetupcons
 from ovirt_engine_setup.dwh import constants as odwhcons
 from ovirt_engine_setup.grafana_dwh import constants as ogdwhcons
-from ovirt_engine_setup.engine import constants as oenginecons
 from ovirt_engine_setup.engine_common import constants as oengcommcons
 from ovirt_engine_setup.engine_common import postgres
-
-from ovirt_setup_lib import dialog
 
 
 def _(m):

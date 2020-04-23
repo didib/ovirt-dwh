@@ -19,6 +19,8 @@
 import gettext
 
 
+from otopi import constants as otopicons
+from otopi import filetransaction
 from otopi import util
 from otopi import plugin
 
@@ -26,7 +28,6 @@ from ovirt_engine import util as outil
 
 from ovirt_engine_setup.engine import constants as oenginecons
 from ovirt_engine_setup import constants as osetupcons
-from ovirt_engine_setup import util as osetuputil
 from ovirt_engine_setup.grafana_dwh import constants as ogdwhcons
 from ovirt_setup_lib import dialog
 
@@ -94,7 +95,7 @@ class Plugin(plugin.PluginBase):
 
     @plugin.event(
         stage=plugin.Stages.STAGE_MISC,
-        condition=lamda self: self.environment[ogdwhcons.CoreEnv.ENABLE],
+        condition=lambda self: self.environment[ogdwhcons.CoreEnv.ENABLE],
     )
     def _misc_grafana_config(self):
         uninstall_files = []
@@ -124,7 +125,7 @@ class Plugin(plugin.PluginBase):
                             ogdwhcons.ConfigEnv.ADMIN_PASSWORD
                         ],
                     },
-                )
+                ),
                 modifiedList=uninstall_files,
             )
         )
