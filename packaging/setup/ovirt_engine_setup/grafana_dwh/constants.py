@@ -79,6 +79,37 @@ class Const(object):
             DEK.DATABASE: DWHDefaults.DEFAULT_DB_DATABASE,
         }
 
+    @classproperty
+    def GRAFANA_DB_ENV_KEYS(self):
+        return {
+            DEK.HOST: DWHDBEnv.HOST,
+            DEK.PORT: DWHDBEnv.PORT,
+            DEK.SECURED: DWHDBEnv.SECURED,
+            DEK.HOST_VALIDATION: DWHDBEnv.SECURED_HOST_VALIDATION,
+            DEK.USER: GrafanaDBEnv.USER,
+            DEK.PASSWORD: GrafanaDBEnv.PASSWORD,
+            DEK.DATABASE: DWHDBEnv.DATABASE,
+            DEK.CONNECTION: DWHDBEnv.CONNECTION,
+            DEK.PGPASSFILE: DWHDBEnv.PGPASS_FILE,
+            DEK.NEW_DATABASE: DWHDBEnv.NEW_DATABASE,
+            DEK.DUMPER: DWHDBEnv.DUMPER,
+            DEK.FILTER: DWHDBEnv.FILTER,
+            DEK.RESTORE_JOBS: DWHDBEnv.RESTORE_JOBS,
+        }
+
+    @classproperty
+    def DEFAULT_DWH_DB_ENV_KEYS(self):
+        return {
+            DEK.HOST: DWHDefaults.DEFAULT_DB_HOST,
+            DEK.PORT: DWHDefaults.DEFAULT_DB_PORT,
+            DEK.SECURED: DWHDefaults.DEFAULT_DB_SECURED,
+            DEK.HOST_VALIDATION:
+                DWHDefaults.DEFAULT_DB_SECURED_HOST_VALIDATION,
+            DEK.USER: GrafanaDefaults.DEFAULT_DB_USER,
+            DEK.PASSWORD: GrafanaDefaults.DEFAULT_DB_PASSWORD,
+            DEK.DATABASE: DWHDefaults.DEFAULT_DB_DATABASE,
+        }
+
 
 @util.export
 @util.codegen
@@ -99,6 +130,12 @@ class DWHDefaults(object):
     DEFAULT_DB_PASSWORD = ''
     DEFAULT_DB_SECURED = False
     DEFAULT_DB_SECURED_HOST_VALIDATION = False
+
+@util.export
+@util.codegen
+class GrafanaDefaults(object):
+    DEFAULT_DB_USER = 'ovirt_engine_history_grafana'
+    DEFAULT_DB_PASSWORD = ''
 
 
 @util.export
@@ -237,6 +274,25 @@ class DWHDBEnv(object):
     )
     def RESTORE_JOBS(self):
         return 'OVESETUP_DWH_DB/restoreJobs'
+
+@util.export
+@util.codegen
+@osetupattrsclass
+class GrafanaDBEnv(object):
+
+    @osetupattrs(
+        answerfile=True,
+        summary=True,
+        description=_('DWH database user name'),
+    )
+    def USER(self):
+        return 'OVESETUP_DWH_DB/user'
+
+    @osetupattrs(
+        answerfile=True,
+    )
+    def PASSWORD(self):
+        return 'OVESETUP_DWH_DB/password'
 
 
 @util.export
