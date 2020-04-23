@@ -181,6 +181,7 @@ Requires(postun):	systemd
 Summary:	%{product_name} setup
 Group:		Virtualization/Management
 Requires:	ovirt-engine-setup-plugin-ovirt-engine-common >= 4.4.0
+Requires:	%{name}-grafana-integration-setup = %{version}-%{release}
 %if 0%{?with_python2}
 BuildRequires:	python
 Requires: python2-ovirt-setup-lib
