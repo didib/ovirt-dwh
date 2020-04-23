@@ -28,6 +28,7 @@ from otopi import util
 from ovirt_engine_setup.constants import classproperty
 from ovirt_engine_setup.constants import osetupattrsclass
 from ovirt_engine_setup.constants import osetupattrs
+from ovirt_engine_setup.dwh import constants as odwhcons
 from ovirt_engine_setup.engine_common import constants as oengcommcons
 
 
@@ -98,7 +99,7 @@ class Const(object):
         }
 
     @classproperty
-    def DEFAULT_DWH_DB_ENV_KEYS(self):
+    def DEFAULT_GRAFANA_DB_ENV_KEYS(self):
         return {
             DEK.HOST: DWHDefaults.DEFAULT_DB_HOST,
             DEK.PORT: DWHDefaults.DEFAULT_DB_PORT,
@@ -154,11 +155,20 @@ class FileLocations(object):
         PKG_DATA_DIR,
         'grafana.ini.in',
     )
+    # This keeps Grafana user database credentials.
+    # Nothing should use it except for engine-setup, which uses it to
+    # keep them for future runs and for generating the datasource.
+    OVIRT_ENGINE_DWHD_SERVICE_CONFIG_GRAFANA_DATABASE = os.path.join(
+        odwhcons.FileLocations.OVIRT_ENGINE_DWHD_SERVICE_CONFIGD,
+        '10-setup-grafana-database.conf',
+    )
 
 
 @util.export
 class Stages(object):
     CORE_ENABLE = 'osetup.grafana.core.enable'
+    DB_GRAFANA_CONNECTION_CUSTOMIZATION = \
+        'osetup.grafana.db.connection.customization'
 
 
 @util.export
