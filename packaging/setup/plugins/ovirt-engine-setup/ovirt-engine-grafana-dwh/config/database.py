@@ -67,8 +67,9 @@ class Plugin(plugin.PluginBase):
                     ogdwhcons.FileLocations.
                     OVIRT_ENGINE_DWHD_SERVICE_CONFIG_GRAFANA_DATABASE
                 ),
-                mode=0o600,
+                mode=0o640,
                 owner=self.environment[oengcommcons.SystemEnv.USER_ROOT],
+                group=self.environment[osetupcons.SystemEnv.GROUP_ENGINE],
                 enforcePermissions=True,
                 content=database.OvirtUtils(
                     plugin=self,

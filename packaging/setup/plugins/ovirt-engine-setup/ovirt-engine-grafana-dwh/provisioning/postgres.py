@@ -81,7 +81,7 @@ class Plugin(plugin.PluginBase):
         ),
         after=(
             oengcommcons.Stages.DIALOG_TITLES_S_DATABASE,
-            odwhcons.Stages.DB_PROVISIONING,
+            odwhcons.Stages.DB_PROVISIONING_CUSTOMIZATION,
         ),
         condition=lambda self: self.environment[
             odwhcons.ProvisioningEnv.POSTGRES_PROVISIONING_ENABLED

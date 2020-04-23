@@ -62,6 +62,7 @@ class Const(object):
             DEK.CONNECTION: DWHDBEnv.CONNECTION,
             DEK.PGPASSFILE: DWHDBEnv.PGPASS_FILE,
             DEK.NEW_DATABASE: DWHDBEnv.NEW_DATABASE,
+            DEK.NEED_DBMSUPGRADE: DWHDBEnv.NEED_DBMSUPGRADE,
             DEK.DUMPER: DWHDBEnv.DUMPER,
             DEK.FILTER: DWHDBEnv.FILTER,
             DEK.RESTORE_JOBS: DWHDBEnv.RESTORE_JOBS,
@@ -93,6 +94,7 @@ class Const(object):
             DEK.CONNECTION: DWHDBEnv.CONNECTION,
             DEK.PGPASSFILE: DWHDBEnv.PGPASS_FILE,
             DEK.NEW_DATABASE: DWHDBEnv.NEW_DATABASE,
+            DEK.NEED_DBMSUPGRADE: DWHDBEnv.NEED_DBMSUPGRADE,
             DEK.DUMPER: DWHDBEnv.DUMPER,
             DEK.FILTER: DWHDBEnv.FILTER,
             DEK.RESTORE_JOBS: DWHDBEnv.RESTORE_JOBS,
@@ -117,7 +119,7 @@ class Const(object):
 class Defaults(object):
     DEFAULT_ADDITIONAL_PACKAGES = (
         'grafana'
-        ',grafana-postgres',
+        ',grafana-postgres'
     )
 
 
@@ -154,6 +156,7 @@ class FileLocations(object):
     )
     GRAFANA_CONFIG_FILE_TEMPLATE = os.path.join(
         PKG_DATA_DIR,
+        'conf',
         'grafana.ini.in',
     )
     # This keeps Grafana user database credentials.
@@ -267,6 +270,7 @@ class DWHDBEnv(object):
     STATEMENT = 'OVESETUP_DWH_DB/statement'
     PGPASS_FILE = 'OVESETUP_DWH_DB/pgPassFile'
     NEW_DATABASE = 'OVESETUP_DWH_DB/newDatabase'
+    NEED_DBMSUPGRADE = 'OVESETUP_DWH_DB/needDBMSUpgrade'
 
     @osetupattrs(
         answerfile=True,

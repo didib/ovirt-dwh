@@ -51,7 +51,7 @@ class Plugin(plugin.PluginBase):
     def _init(self):
         self.environment.setdefault(
             ogdwhcons.RPMDistroEnv.PACKAGES_SETUP,
-            odwhcons.Const.OVIRT_ENGINE_GRAFANA_DWH_SETUP_PACKAGE_NAME
+            ogdwhcons.Const.OVIRT_ENGINE_GRAFANA_DWH_SETUP_PACKAGE_NAME
         )
         self.environment.setdefault(
             ogdwhcons.RPMDistroEnv.ADDITIONAL_PACKAGES,
