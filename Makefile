@@ -124,6 +124,7 @@ GENERATED = \
 	packaging/services/ovirt-engine-dwhd/ovirt-engine-dwhd.sysv \
 	packaging/services/ovirt-engine-dwhd/ovirt_engine_dwh_watchdog.cron \
 	packaging/setup/ovirt_engine_setup/dwh/config.py \
+	packaging/setup/ovirt_engine_setup/grafana_dwh/config.py \
 	packaging/sys-etc/logrotate.d/ovirt-engine-dwhd \
 	$(NULL)
 
