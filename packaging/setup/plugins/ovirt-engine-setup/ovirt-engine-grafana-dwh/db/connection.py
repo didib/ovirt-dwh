@@ -60,7 +60,8 @@ class Plugin(plugin.PluginBase):
             name='Grafana',
             queryprefix='OVESETUP_GRAFANA_DB_',
             defaultdbenvkeys=ogdwhcons.Const.DEFAULT_GRAFANA_DB_ENV_KEYS,
-            show_create_msg=True,
+            show_create_msg=False,
+            validateconf=False,
         )
 
 

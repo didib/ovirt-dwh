@@ -29,6 +29,7 @@ from ovirt_engine_setup.dwh import constants as odwhcons
 from ovirt_engine_setup.grafana_dwh import constants as ogdwhcons
 from ovirt_engine_setup.engine_common import constants as oengcommcons
 from ovirt_engine_setup.engine_common import postgres
+from ovirt_setup_lib import dialog
 
 
 def _(m):
@@ -84,17 +85,44 @@ class Plugin(plugin.PluginBase):
             odwhcons.Stages.DB_PROVISIONING_CUSTOMIZATION,
         ),
         condition=lambda self: self.environment[
-            odwhcons.ProvisioningEnv.POSTGRES_PROVISIONING_ENABLED
+            ogdwhcons.CoreEnv.ENABLE
         ],
     )
     def _customization(self):
-        self._provisioning.applyEnvironment()
+        self._enabled = False
+        if self.environment[
+            odwhcons.ProvisioningEnv.POSTGRES_PROVISIONING_ENABLED
+        ]:
+            self._enabled = True
+        elif (
+            not self.environment[odwhcons.DBEnv.NEW_DATABASE] and
+            not self.environment[ogdwhcons.GrafanaDBEnv.PASSWORD]
+            and self.environment[odwhcons.DBEnv.HOST]=='localhost'
+        ):
+            self.dialog.note(
+                _(
+                    'DWH database is on localhost, user for Grafana not '
+                    'configured yet.'
+                )
+            )
+            self._enabled = dialog.queryBoolean(
+                dialog=self.dialog,
+                name='CREATE_GRAFANA_DB_LOCAL_USER',
+                note=_(
+                    'Create a local user for Grafana? '
+                    '(@VALUES@) [@DEFAULT@]: '
+                ),
+                prompt=True,
+                true=_('Yes'),
+                false=_('No'),
+                default=True,
+            )
+        if self._enabled:
+            self._provisioning.applyEnvironment()
 
     @plugin.event(
         stage=plugin.Stages.STAGE_VALIDATION,
-        condition=lambda self: self.environment[
-            odwhcons.ProvisioningEnv.POSTGRES_PROVISIONING_ENABLED
-        ],
+        condition=lambda self: self._enabled,
     )
     def _validation(self):
         self._provisioning.validate()
@@ -104,39 +132,12 @@ class Plugin(plugin.PluginBase):
         after=(
             odwhcons.Stages.DB_SCHEMA,
         ),
-        condition=lambda self: self.environment[
-            odwhcons.ProvisioningEnv.POSTGRES_PROVISIONING_ENABLED
-        ],
+        condition=lambda self: self._enabled,
     )
     def _misc(self):
         self._provisioning.createUser()
         self._provisioning.addPgHbaDatabaseAccess()
         self._provisioning.grantReadOnlyAccessToUser()
 
-    @plugin.event(
-        stage=plugin.Stages.STAGE_CLOSEUP,
-        before=(
-            osetupcons.Stages.DIALOG_TITLES_E_SUMMARY,
-        ),
-        after=(
-            osetupcons.Stages.DIALOG_TITLES_S_SUMMARY,
-        ),
-        condition=lambda self: self._provisioning.databaseRenamed,
-    )
-    def _closeup(self):
-        self.dialog.note(
-            text=_(
-                'ovirt grafana database resources:\n'
-                '    Database name:      {database}\n'
-                '    Database user name: {user}\n'
-            ).format(
-                database=self.environment[
-                    ogdwhcons.GrafanaDBEnv.DATABASE
-                ],
-                user=self.environment[
-                    ogdwhcons.GrafanaDBEnv.USER
-                ],
-            )
-        )
 
 # vim: expandtab tabstop=4 shiftwidth=4

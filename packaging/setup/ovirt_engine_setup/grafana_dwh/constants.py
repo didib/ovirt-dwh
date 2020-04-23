@@ -173,6 +173,7 @@ class Stages(object):
     CORE_ENABLE = 'osetup.grafana.core.enable'
     DB_GRAFANA_CONNECTION_CUSTOMIZATION = \
         'osetup.grafana.db.connection.customization'
+    DB_CONNECTION_SETUP = 'osetup.grafana.db.connection.setup'
 
 
 @util.export
@@ -299,16 +300,19 @@ class GrafanaDBEnv(object):
     @osetupattrs(
         answerfile=True,
         summary=True,
-        description=_('DWH database user name'),
+        description=_('Grafana database user name'),
     )
     def USER(self):
-        return 'OVESETUP_DWH_DB/user'
+        return 'OVESETUP_GRAFANA_DB/user'
 
     @osetupattrs(
         answerfile=True,
     )
     def PASSWORD(self):
-        return 'OVESETUP_DWH_DB/password'
+        return 'OVESETUP_GRAFANA_DB/password'
+
+    CONNECTION = 'OVESETUP_GRAFANA_DB/connection'
+    STATEMENT = 'OVESETUP_GRAFANA_DB/statement'
 
 
 @util.export
