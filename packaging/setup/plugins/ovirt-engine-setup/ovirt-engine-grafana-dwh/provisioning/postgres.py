@@ -23,6 +23,7 @@ import gettext
 
 from otopi import plugin
 from otopi import util
+from otopi import transaction
 
 from ovirt_engine_setup import constants as osetupcons
 from ovirt_engine_setup.dwh import constants as odwhcons
@@ -136,7 +137,10 @@ class Plugin(plugin.PluginBase):
     )
     def _misc(self):
         self._provisioning.createUser()
-        self._provisioning.addPgHbaDatabaseAccess()
+        with transaction.Transaction() as localtransaction:
+            self._provisioning.addPgHbaDatabaseAccess(
+                transaction=localtransaction,
+            )
         self._provisioning.grantReadOnlyAccessToUser()
 
 
