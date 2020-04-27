@@ -133,6 +133,13 @@ class Plugin(plugin.PluginBase):
         after=(
             odwhcons.Stages.DB_SCHEMA,
         ),
+        before=(
+            odwhcons.Stages.DB_CONNECTION_AVAILABLE,
+            # TODO: This is not enough. We restart PG here, so have to do that
+            # before starting the connection, or it will be broken. But also
+            # other plugins maintain connections, to engine db and cinderlib
+            # db. Need to clean this up.
+        ),
         condition=lambda self: self._enabled,
     )
     def _misc(self):
@@ -141,6 +148,7 @@ class Plugin(plugin.PluginBase):
             self._provisioning.addPgHbaDatabaseAccess(
                 transaction=localtransaction,
             )
+        self._provisioning.restartPG()
         self._provisioning.grantReadOnlyAccessToUser()
 
 
