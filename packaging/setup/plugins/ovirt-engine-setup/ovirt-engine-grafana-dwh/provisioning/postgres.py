@@ -143,6 +143,7 @@ class Plugin(plugin.PluginBase):
         condition=lambda self: self._enabled,
     )
     def _misc(self):
+        self.logger.info(_('Creating a user for Grafana'))
         self._provisioning.createUser()
         with transaction.Transaction() as localtransaction:
             self._provisioning.addPgHbaDatabaseAccess(
