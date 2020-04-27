@@ -206,6 +206,12 @@ class ConfigEnv(object):
     def ADMIN_PASSWORD(self):
         return 'OVESETUP_GRAFANA_CONFIG/adminPassword'
 
+    @osetupattrs(
+        postinstallfile=True,
+    )
+    def ADMIN_PASSWORD_SET(self):
+        return 'OVESETUP_GRAFANA_CONFIG/adminPasswordSet'
+
 
 @util.export
 @util.codegen

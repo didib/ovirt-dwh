@@ -50,6 +50,10 @@ class Plugin(plugin.PluginBase):
             ogdwhcons.ConfigEnv.ADMIN_PASSWORD,
             None
         )
+        self.environment.setdefault(
+            ogdwhcons.ConfigEnv.ADMIN_PASSWORD_SET,
+            None
+        )
 
     @plugin.event(
         stage=plugin.Stages.STAGE_CUSTOMIZATION,
@@ -61,7 +65,8 @@ class Plugin(plugin.PluginBase):
         ),
         condition=lambda self: (
             self.environment[ogdwhcons.ConfigEnv.ADMIN_PASSWORD] is None and
-            self.environment[ogdwhcons.CoreEnv.ENABLE]
+            self.environment[ogdwhcons.CoreEnv.ENABLE] and
+            not self.environment[ogdwhcons.ConfigEnv.ADMIN_PASSWORD_SET]
         ),
     )
     def _customization_admin_password(self):
@@ -92,6 +97,7 @@ class Plugin(plugin.PluginBase):
                 ),
             )
         self.environment[ogdwhcons.ConfigEnv.ADMIN_PASSWORD] = password
+        self.environment[ogdwhcons.ConfigEnv.ADMIN_PASSWORD_SET] = True
 
     @plugin.event(
         stage=plugin.Stages.STAGE_MISC,
