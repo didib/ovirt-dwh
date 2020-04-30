@@ -121,6 +121,7 @@ class Defaults(object):
         'grafana'
         ',grafana-postgres'
     )
+    GRAFANA_PORT = 3000
 
 
 @util.export
@@ -180,6 +181,17 @@ class FileLocations(object):
         odwhcons.FileLocations.OVIRT_ENGINE_DWHD_SERVICE_CONFIGD,
         '10-setup-grafana-database.conf',
     )
+    HTTPD_CONF_GRAFANA = os.path.join(
+        '/etc',
+        'httpd',
+        'conf.d',
+        'ovirt-engine-grafana-proxy.conf'
+    )
+    HTTPD_CONF_GRAFANA_TEMPLATE = os.path.join(
+        PKG_DATA_DIR,
+        'conf',
+        'httpd-grafana-proxy.conf.in'
+    )
 
 
 @util.export
@@ -225,6 +237,9 @@ class ConfigEnv(object):
     )
     def ADMIN_PASSWORD_SET(self):
         return 'OVESETUP_GRAFANA_CONFIG/adminPasswordSet'
+
+    GRAFANA_PORT = 'OVESETUP_GRAFANA_CONFIG/GrafanaPort'
+    HTTPD_CONF_GRAFANA = 'OVESETUP_GRAFANA_CONFIG/httpdConfGrafana'
 
 
 @util.export

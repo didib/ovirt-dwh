@@ -1,0 +1,10 @@
+<IfModule !mod_proxy>
+    LoadModule proxy_module modules/mod_proxy.so
+</IfModule>
+
+<Location /ovirt-engine-grafana>
+    ProxyPassMatch http://127.0.0.1:@GRAFANA_PORT@ timeout=3600 retry=5
+    <IfModule deflate_module>
+        AddOutputFilterByType DEFLATE text/javascript text/css text/html text/xml text/json application/xml application/json application/x-yaml
+    </IfModule>
+</Location>

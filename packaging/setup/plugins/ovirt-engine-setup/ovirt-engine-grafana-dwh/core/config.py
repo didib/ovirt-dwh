@@ -134,6 +134,9 @@ class Plugin(plugin.PluginBase):
                             ogdwhcons.FileLocations.
                             GRAFANA_PROVISIONING_CONFIGURATION
                         ),
+                        '@GRAFANA_PORT@': self.environment[
+                            ogdwhcons.ConfigEnv.GRAFANA_PORT
+                        ],
                     },
                 ),
                 modifiedList=uninstall_files,

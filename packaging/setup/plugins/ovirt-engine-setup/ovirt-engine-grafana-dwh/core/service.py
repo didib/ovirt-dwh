@@ -38,6 +38,15 @@ class Plugin(plugin.PluginBase):
         super(Plugin, self).__init__(context=context)
 
     @plugin.event(
+        stage=plugin.Stages.STAGE_INIT,
+    )
+    def _init(self):
+        self.environment.setdefault(
+            ogdwhcons.ConfigEnv.GRAFANA_PORT,
+            ogdwhcons.Defaults.GRAFANA_PORT
+        )
+
+    @plugin.event(
         stage=plugin.Stages.STAGE_CLOSEUP,
         condition=lambda self: (
             not self.environment[

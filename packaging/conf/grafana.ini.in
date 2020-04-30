@@ -35,7 +35,7 @@ protocol = http
 http_addr =
 
 # The http port  to use
-http_port = 3000
+http_port = @GRAFANA_PORT@
 
 # Redirect to correct domain if host header does not match domain
 # Prevents DNS rebinding attacks
