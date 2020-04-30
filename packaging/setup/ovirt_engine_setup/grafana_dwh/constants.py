@@ -159,6 +159,20 @@ class FileLocations(object):
         'conf',
         'grafana.ini.in',
     )
+    GRAFANA_PROVISIONING_CONFIGURATION = os.path.join(
+        GRAFANA_SYSCONF_DIR,
+        'conf',
+        'provisioning',
+    )
+    GRAFANA_PROVISIONING_CONFIGURATION_DWH = os.path.join(
+        GRAFANA_PROVISIONING_CONFIGURATION,
+        'ovirt-dwh.yaml',
+    )
+    GRAFANA_PROVISIONING_CONFIGURATION_DWH_TEMPLATE = os.path.join(
+        PKG_DATA_DIR,
+        'conf',
+        'grafana-dwh-data-source.template',
+    )
     # This keeps Grafana user database credentials.
     # Nothing should use it except for engine-setup, which uses it to
     # keep them for future runs and for generating the datasource.

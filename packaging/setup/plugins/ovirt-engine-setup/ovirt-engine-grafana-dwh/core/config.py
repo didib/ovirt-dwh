@@ -130,6 +130,10 @@ class Plugin(plugin.PluginBase):
                         '@ADMIN_PASSWORD@': self.environment[
                             ogdwhcons.ConfigEnv.ADMIN_PASSWORD
                         ],
+                        '@PROVISIONING@': (
+                            ogdwhcons.FileLocations.
+                            GRAFANA_PROVISIONING_CONFIGURATION
+                        ),
                     },
                 ),
                 modifiedList=uninstall_files,

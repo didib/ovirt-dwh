@@ -22,11 +22,13 @@
 from otopi import util
 
 from . import database
+from . import datasource
 
 
 @util.export
 def createPlugins(context):
     database.Plugin(context=context)
+    datasource.Plugin(context=context)
 
 
 # vim: expandtab tabstop=4 shiftwidth=4
