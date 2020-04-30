@@ -48,6 +48,7 @@ class Plugin(plugin.PluginBase):
             dbenvkeys=ogdwhcons.Const.GRAFANA_DB_ENV_KEYS,
             defaults=ogdwhcons.Const.DEFAULT_GRAFANA_DB_ENV_KEYS,
         )
+        self._enabled = False
 
     @plugin.event(
         stage=plugin.Stages.STAGE_INIT,
@@ -90,7 +91,6 @@ class Plugin(plugin.PluginBase):
         ],
     )
     def _customization(self):
-        self._enabled = False
         if self.environment[
             odwhcons.ProvisioningEnv.POSTGRES_PROVISIONING_ENABLED
         ]:
