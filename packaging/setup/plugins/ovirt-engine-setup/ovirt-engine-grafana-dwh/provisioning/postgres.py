@@ -97,8 +97,8 @@ class Plugin(plugin.PluginBase):
             self._enabled = True
         elif (
             not self.environment[odwhcons.DBEnv.NEW_DATABASE] and
-            not self.environment[ogdwhcons.GrafanaDBEnv.PASSWORD]
-            and self.environment[odwhcons.DBEnv.HOST]=='localhost'
+            not self.environment[ogdwhcons.GrafanaDBEnv.PASSWORD] and
+            self.environment[odwhcons.DBEnv.HOST] == 'localhost'
         ):
             self.dialog.note(
                 _(
