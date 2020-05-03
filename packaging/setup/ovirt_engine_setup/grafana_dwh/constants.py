@@ -167,6 +167,7 @@ class FileLocations(object):
     )
     GRAFANA_PROVISIONING_CONFIGURATION_DWH = os.path.join(
         GRAFANA_PROVISIONING_CONFIGURATION,
+        'datasources',
         'ovirt-dwh.yaml',
     )
     GRAFANA_PROVISIONING_CONFIGURATION_DWH_TEMPLATE = os.path.join(
