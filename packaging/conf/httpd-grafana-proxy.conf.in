@@ -3,8 +3,6 @@
 </IfModule>
 
 <Location /ovirt-engine-grafana>
-    ProxyPassMatch http://127.0.0.1:@GRAFANA_PORT@ timeout=3600 retry=5
-    <IfModule deflate_module>
-        AddOutputFilterByType DEFLATE text/javascript text/css text/html text/xml text/json application/xml application/json application/x-yaml
-    </IfModule>
+    ProxyPass http://127.0.0.1:@GRAFANA_PORT@ retry=0 disablereuse=On
+    ProxyPassReverse http://127.0.0.1:@GRAFANA_PORT@/ovirt-engine-grafana
 </Location>
