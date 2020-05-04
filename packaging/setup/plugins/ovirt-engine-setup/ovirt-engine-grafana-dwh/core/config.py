@@ -76,8 +76,8 @@ class Plugin(plugin.PluginBase):
                 dialog=self.dialog,
                 name='GRAFANA_USE_ENGINE_ADMIN_PASSWORD',
                 note=_(
-                    'Use Engine admin password for Grafana admin '
-                    '(@VALUES@) [@DEFAULT@]: '
+                    'Use Engine admin password as initial Grafana admin '
+                    'password (@VALUES@) [@DEFAULT@]: '
                 ),
                 prompt=True,
                 default=True
