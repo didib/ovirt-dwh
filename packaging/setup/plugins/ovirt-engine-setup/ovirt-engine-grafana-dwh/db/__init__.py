@@ -21,12 +21,14 @@
 
 from otopi import util
 
-from . import connection
+from . import dwh_connection
+from . import grafana
 
 
 @util.export
 def createPlugins(context):
-    connection.Plugin(context=context)
+    dwh_connection.Plugin(context=context)
+    grafana.Plugin(context=context)
 
 
 # vim: expandtab tabstop=4 shiftwidth=4

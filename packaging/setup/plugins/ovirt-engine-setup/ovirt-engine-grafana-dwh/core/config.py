@@ -17,8 +17,8 @@
 
 
 import gettext
-import os
 import random
+import string
 
 
 from otopi import constants as otopicons
@@ -65,23 +65,6 @@ class Plugin(plugin.PluginBase):
             ogdwhcons.ConfigEnv.CONF_SECRET_KEY,
             self._generatePassword()
         )
-        self.environment.setdefault(
-            ogdwhcons.ConfigEnv.NEW_DATABASE,
-            None
-        )
-
-    @plugin.event(
-        stage=plugin.Stages.STAGE_SETUP,
-    )
-    def _setup_check_new_database(self):
-        db = os.path.join(
-            ogdwhcons.FileLocations.GRAFANA_STATE_DIR,
-            ogdwhcons.FileLocations.GRAFANA_DB
-        )
-        is_new = True
-        if os.path.exists(db) and os.stat(db).st_size > 0:
-            is_new = False
-        self.environment[ogdwhcons.ConfigEnv.NEW_DATABASE] = is_new
 
     @plugin.event(
         stage=plugin.Stages.STAGE_CUSTOMIZATION,

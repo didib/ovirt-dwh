@@ -122,6 +122,8 @@ class Defaults(object):
         ',grafana-postgres'
     )
     GRAFANA_PORT = 3000
+    GRAFANA_DEFAULT_USER = 'grafana'
+    GRAFANA_DEFAULT_GROUP = 'grafana'
 
 
 @util.export
@@ -250,6 +252,10 @@ class ConfigEnv(object):
     # /var/lib/grafana/grafana.db . It's considered "new"
     # if it's missing or with size 0.
     NEW_DATABASE = 'OVESETUP_GRAFANA_CONFIG/newDatabase'
+
+    GRAFANA_USER = 'OVESETUP_GRAFANA_CONFIG/grafanaUser'
+    GRAFANA_GROUP = 'OVESETUP_GRAFANA_CONFIG/grafanaGroup'
+
 
 @util.export
 @util.codegen
