@@ -19,11 +19,13 @@
 from otopi import util
 
 
+from . import grafana_db
 from . import service
 
 
 @util.export
 def createPlugins(context):
+    grafana_db.Plugin(context=context)
     service.Plugin(context=context)
 
 

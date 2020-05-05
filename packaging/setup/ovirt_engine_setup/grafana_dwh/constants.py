@@ -256,6 +256,12 @@ class ConfigEnv(object):
     GRAFANA_USER = 'OVESETUP_GRAFANA_CONFIG/grafanaUser'
     GRAFANA_GROUP = 'OVESETUP_GRAFANA_CONFIG/grafanaGroup'
 
+    @osetupattrs(
+        postinstallfile=True,
+    )
+    def GRAFANA_DB_CREATED_BY_US(self):
+        return 'OVESETUP_GRAFANA_CORE/grafanaDbCreatedByUs'
+
 
 @util.export
 @util.codegen

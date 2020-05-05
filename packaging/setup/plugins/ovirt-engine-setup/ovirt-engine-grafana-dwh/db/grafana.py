@@ -92,5 +92,6 @@ class Plugin(plugin.PluginBase):
                     self.environment[ogdwhcons.ConfigEnv.GRAFANA_GROUP]
                 )
             )
+        self.environment[ogdwhcons.ConfigEnv.GRAFANA_DB_CREATED_BY_US] = True
 
 # vim: expandtab tabstop=4 shiftwidth=4

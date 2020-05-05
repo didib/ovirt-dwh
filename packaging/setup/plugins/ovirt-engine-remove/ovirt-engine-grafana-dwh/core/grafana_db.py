@@ -16,14 +16,15 @@
 #
 
 
+import datetime
 import gettext
+import os
 
 
 from otopi import util
 from otopi import plugin
 
 
-from ovirt_engine_setup import constants as osetupcons
 from ovirt_engine_setup.grafana_dwh import constants as ogdwhcons
 
 
@@ -38,38 +39,25 @@ class Plugin(plugin.PluginBase):
         super(Plugin, self).__init__(context=context)
 
     @plugin.event(
-        stage=plugin.Stages.STAGE_BOOT,
-        before=(
-            osetupcons.Stages.SECRETS_FILTERED_FROM_SETUP_ATTRS_MODULES,
-        ),
+        stage=plugin.Stages.STAGE_CLOSEUP,
+        condition=lambda self: self.environment[
+            ogdwhcons.ConfigEnv.GRAFANA_DB_CREATED_BY_US
+        ],
     )
-    def _boot(self):
-        self.environment[
-            osetupcons.CoreEnv.SETUP_ATTRS_MODULES
-        ].append(
-            ogdwhcons,
+    def _closeup_remove_grafana_db(self):
+        db = os.path.join(
+            ogdwhcons.FileLocations.GRAFANA_STATE_DIR,
+            ogdwhcons.FileLocations.GRAFANA_DB
         )
-
-    @plugin.event(
-        stage=plugin.Stages.STAGE_INIT,
-    )
-    def _init(self):
-        self.environment.setdefault(ogdwhcons.CoreEnv.ENABLE, None)
-        self.environment.setdefault(
-            ogdwhcons.ConfigEnv.GRAFANA_DB_CREATED_BY_US,
-            None
+        backup = '%s.%s' % (
+            db,
+            datetime.datetime.now().strftime('%Y%m%d%H%M%S'),
         )
-
-    @plugin.event(
-        stage=plugin.Stages.STAGE_SETUP,
-    )
-    def _setup(self):
-        self.environment[
-            osetupcons.CoreEnv.REGISTER_UNINSTALL_GROUPS
-        ].createGroup(
-            group='ovirt_grafana_files',
-            description='Grafana files',
-            optional=True,
+        os.rename(db, backup)
+        self.logger.info(
+            'Grafana database %s renamed to %s',
+            db,
+            backup
         )
 
 
