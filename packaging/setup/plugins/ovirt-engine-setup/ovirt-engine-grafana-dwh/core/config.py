@@ -77,7 +77,7 @@ class Plugin(plugin.PluginBase):
         condition=lambda self: (
             self.environment[ogdwhcons.ConfigEnv.ADMIN_PASSWORD] is None and
             self.environment[ogdwhcons.CoreEnv.ENABLE] and
-            not self.environment[ogdwhcons.ConfigEnv.NEW_DATABASE]
+            self.environment[ogdwhcons.ConfigEnv.NEW_DATABASE]
         ),
     )
     def _customization_admin_password(self):
