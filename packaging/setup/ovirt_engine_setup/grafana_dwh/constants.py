@@ -193,6 +193,9 @@ class FileLocations(object):
         'conf',
         'httpd-grafana-proxy.conf.in'
     )
+    # Grafana's (default) internal sqlite database, relative to
+    # GRAFANA_STATE_DIR
+    GRAFANA_DB = 'grafana.db'
 
 
 @util.export
@@ -233,15 +236,20 @@ class ConfigEnv(object):
     def ADMIN_PASSWORD(self):
         return 'OVESETUP_GRAFANA_CONFIG/adminPassword'
 
-    @osetupattrs(
-        postinstallfile=True,
-    )
-    def ADMIN_PASSWORD_SET(self):
-        return 'OVESETUP_GRAFANA_CONFIG/adminPasswordSet'
-
     GRAFANA_PORT = 'OVESETUP_GRAFANA_CONFIG/GrafanaPort'
     HTTPD_CONF_GRAFANA = 'OVESETUP_GRAFANA_CONFIG/httpdConfGrafana'
 
+    @osetupattrs(
+        is_secret=True,
+    )
+    def CONF_SECRET_KEY(self):
+        return 'OVESETUP_GRAFANA_CONFIG/confSecretKey'
+
+    # This refers to grafana's internal databse, which is
+    # (also by default) an sqlite3 db file at
+    # /var/lib/grafana/grafana.db . It's considered "new"
+    # if it's missing or with size 0.
+    NEW_DATABASE = 'OVESETUP_GRAFANA_CONFIG/newDatabase'
 
 @util.export
 @util.codegen

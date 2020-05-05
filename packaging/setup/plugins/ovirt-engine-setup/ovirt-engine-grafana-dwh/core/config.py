@@ -17,6 +17,8 @@
 
 
 import gettext
+import os
+import random
 
 
 from otopi import constants as otopicons
@@ -42,6 +44,15 @@ class Plugin(plugin.PluginBase):
     def __init__(self, context):
         super(Plugin, self).__init__(context=context)
 
+    @staticmethod
+    def _generatePassword():
+        return ''.join([
+            random.SystemRandom().choice(
+                string.ascii_letters +
+                string.digits
+            ) for i in range(22)
+        ])
+
     @plugin.event(
         stage=plugin.Stages.STAGE_INIT,
     )
@@ -51,9 +62,26 @@ class Plugin(plugin.PluginBase):
             None
         )
         self.environment.setdefault(
-            ogdwhcons.ConfigEnv.ADMIN_PASSWORD_SET,
+            ogdwhcons.ConfigEnv.CONF_SECRET_KEY,
+            self._generatePassword()
+        )
+        self.environment.setdefault(
+            ogdwhcons.ConfigEnv.NEW_DATABASE,
             None
         )
+
+    @plugin.event(
+        stage=plugin.Stages.STAGE_SETUP,
+    )
+    def _setup_check_new_database(self):
+        db = os.path.join(
+            ogdwhcons.FileLocations.GRAFANA_STATE_DIR,
+            ogdwhcons.FileLocations.GRAFANA_DB
+        )
+        is_new = True
+        if os.path.exists(db) and os.stat(db).st_size > 0:
+            is_new = False
+        self.environment[ogdwhcons.ConfigEnv.NEW_DATABASE] = is_new
 
     @plugin.event(
         stage=plugin.Stages.STAGE_CUSTOMIZATION,
@@ -66,7 +94,7 @@ class Plugin(plugin.PluginBase):
         condition=lambda self: (
             self.environment[ogdwhcons.ConfigEnv.ADMIN_PASSWORD] is None and
             self.environment[ogdwhcons.CoreEnv.ENABLE] and
-            not self.environment[ogdwhcons.ConfigEnv.ADMIN_PASSWORD_SET]
+            not self.environment[ogdwhcons.ConfigEnv.NEW_DATABASE]
         ),
     )
     def _customization_admin_password(self):
@@ -97,11 +125,13 @@ class Plugin(plugin.PluginBase):
                 ),
             )
         self.environment[ogdwhcons.ConfigEnv.ADMIN_PASSWORD] = password
-        self.environment[ogdwhcons.ConfigEnv.ADMIN_PASSWORD_SET] = True
 
     @plugin.event(
         stage=plugin.Stages.STAGE_MISC,
-        condition=lambda self: self.environment[ogdwhcons.CoreEnv.ENABLE],
+        condition=lambda self: (
+            self.environment[ogdwhcons.CoreEnv.ENABLE] and
+            self.environment[ogdwhcons.ConfigEnv.NEW_DATABASE]
+        ),
     )
     def _misc_grafana_config(self):
         uninstall_files = []
@@ -137,6 +167,15 @@ class Plugin(plugin.PluginBase):
                         '@GRAFANA_PORT@': self.environment[
                             ogdwhcons.ConfigEnv.GRAFANA_PORT
                         ],
+                        '@SECRET_KEY@': self.environment[
+                            ogdwhcons.ConfigEnv.CONF_SECRET_KEY
+                        ],
+                        '@GRAFANA_STATE_DIR@': (
+                            ogdwhcons.FileLocations.GRAFANA_STATE_DIR
+                        ),
+                        '@GRAFANA_DB@': (
+                            ogdwhcons.FileLocations.GRAFANA_DB
+                        ),
                     },
                 ),
                 modifiedList=uninstall_files,

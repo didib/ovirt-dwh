@@ -12,7 +12,7 @@ instance_name = ${HOSTNAME}
 #################################### Paths ###############################
 [paths]
 # Path to where grafana can store temp files, sessions, and the sqlite3 db (if that is used)
-data = /var/lib/grafana
+data = @GRAFANA_STATE_DIR@
 
 # Temporary files in `data` directory older than given duration will be removed
 temp_data_lifetime = 24h
@@ -101,7 +101,7 @@ client_cert_path =
 server_cert_name =
 
 # For "sqlite3" only, path relative to data_path setting
-path = grafana.db
+path = @GRAFANA_DB@
 
 # For "sqlite3" only. cache mode setting used for connecting to the database
 cache_mode = private
@@ -169,7 +169,7 @@ admin_user = admin
 admin_password = @ADMIN_PASSWORD@
 
 # used for signing
-secret_key = SW2YcwTIb9zpOOhoPsMm
+secret_key = @SECRET_KEY@
 
 # disable gravatar profile images
 disable_gravatar = false
