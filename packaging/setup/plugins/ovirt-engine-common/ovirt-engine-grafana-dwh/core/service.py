@@ -43,7 +43,7 @@ class Plugin(plugin.PluginBase):
     def _init(self):
         self.environment.setdefault(
             ogdwhcons.ConfigEnv.GRAFANA_SERVICE_STOP_NEEDED,
-            False
+            True
         )
 
     @plugin.event(
