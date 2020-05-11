@@ -113,6 +113,9 @@ class Const(object):
             DEK.DATABASE: DWHDefaults.DEFAULT_DB_DATABASE,
         }
 
+    # Is there a need to make this configurable?
+    OVIRT_GRAFANA_SSO_CLIENT_ID = 'ovirt-grafana'
+
 
 @util.export
 @util.codegen

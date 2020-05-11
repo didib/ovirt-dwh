@@ -16,9 +16,12 @@
 #
 
 
+import atexit
 import gettext
+import os
 import random
 import string
+import tempfile
 
 
 from otopi import constants as otopicons
@@ -26,6 +29,7 @@ from otopi import filetransaction
 from otopi import util
 from otopi import plugin
 
+from ovirt_engine import configfile
 from ovirt_engine import util as outil
 
 from ovirt_engine_setup.engine import constants as oenginecons
@@ -43,6 +47,8 @@ class Plugin(plugin.PluginBase):
 
     def __init__(self, context):
         super(Plugin, self).__init__(context=context)
+        self._sso_config = None
+        self._grafana_fqdn = None
 
     @staticmethod
     def _generatePassword():
@@ -110,6 +116,81 @@ class Plugin(plugin.PluginBase):
         self.environment[ogdwhcons.ConfigEnv.ADMIN_PASSWORD] = password
 
     @plugin.event(
+        stage=plugin.Stages.STAGE_CUSTOMIZATION,
+        before=(
+            osetupcons.Stages.DIALOG_TITLES_E_MISC,
+        ),
+        after=(
+            osetupcons.Stages.DIALOG_TITLES_S_MISC,
+        ),
+        condition=lambda self: (
+            self.environment[ogdwhcons.CoreEnv.ENABLE] and
+            self.environment[ogdwhcons.ConfigEnv.NEW_DATABASE]
+        ),
+    )
+    def _customization_sso(self):
+        sso_client_tool = '/usr/bin/ovirt-register-sso-client-tool'
+        if not os.path.exists(sso_client_tool):
+            # TODO: make this optional
+            # After grafana supports split config files, have sso in its
+            # own file
+            raise RuntimeError(_('{tool} is missing').format(sso_client_tool))
+
+        # We should already have ENGINE_FQDN even if remote, because we
+        # are in MISC title which is after NETWORK title
+        engine_fqdn = self.environment[oenginecons.ConfigEnv.ENGINE_FQDN]
+
+        # TODO: Fix for separate machines
+        self._grafana_fqdn = engine_fqdn
+        
+
+        fd, tmpconf = tempfile.mkstemp()
+        atexit.register(os.unlink, tmpconf)
+
+        sso_client_tool_cmd = (
+            '{tool} '
+            '--callback-prefix-url=https://{grafana_fqdn}/ovirt-engine-grafana/ '
+            '--client-ca-location={ca_pem} '
+            '--client-id={client_id} '
+            '--encrypted-userinfo=false '
+            '--conf-file-name={tmpconf}'
+        ).format(
+            tool=sso_client_tool,
+            grafana_fqdn=self._grafana_fqdn,
+            ca_pem=oenginecons.FileLocations.OVIRT_ENGINE_PKI_ENGINE_CA_CERT,
+            client_id=ogdwhcons.Const.OVIRT_GRAFANA_SSO_CLIENT_ID,
+            tmpconf=tmpconf,
+        )
+        if self.environment[oenginecons.CoreEnv.ENABLE]:
+            self.execute(sso_client_tool_cmd.split(' '))
+        else:
+            # TODO: do this with remote_engine
+            dialog.queryString(
+                name='PROMPT_GRAFANA_REMOTE_ENGINE_SSO',
+                note=_(
+                    'Please run the following command on the engine machine '
+                    '{engine_fqdn}:\n'
+                    '{cmd}\n'
+                    'Then copy the file {tmpconf} from the engine machine to '
+                    'this machine, and press Enter to continue: '
+                ).format(
+                    engine_fqdn=engine_fqdn,
+                    cmd=sso_client_tool_cmd,
+                    tmpconf=tmpconf,
+                ),
+                prompt=True,
+                default='y',  # Allow Enter without any value
+            )
+        self._sso_config = configfile.ConfigFile([tmpconf])
+        self.environment[
+            otopicons.CoreEnv.LOG_FILTER
+        ].append(
+            self._sso_config.get(
+                'SSO_CLIENT_SECRET'
+            )
+        )
+
+    @plugin.event(
         stage=plugin.Stages.STAGE_MISC,
         condition=lambda self: (
             self.environment[ogdwhcons.CoreEnv.ENABLE] and
@@ -158,6 +239,24 @@ class Plugin(plugin.PluginBase):
                         ),
                         '@GRAFANA_DB@': (
                             ogdwhcons.FileLocations.GRAFANA_DB
+                        ),
+                        '@OVIRT_GRAFANA_SSO_CLIENT_ID@': self._sso_config.get(
+                            'SSO_CLIENT_ID'
+                        ),
+                        '@OVIRT_GRAFANA_SSO_CLIENT_SECRET@': self._sso_config.get(
+                            'SSO_CLIENT_SECRET'
+                        ),
+                        '@ENGINE_SSO_AUTH_URL@': (
+                            'https://{fqdn}/ovirt-engine/sso'.format(
+                                fqdn=self.environment[
+                                    oenginecons.ConfigEnv.ENGINE_FQDN
+                                ],
+                            )
+                        ),
+                        '@ROOT_URL@': (
+                            'https://{fqdn}/ovirt-engine-grafana/'.format(
+                                fqdn=self._grafana_fqdn,
+                            )
                         ),
                     },
                 ),
