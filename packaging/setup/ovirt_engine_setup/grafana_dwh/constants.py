@@ -250,7 +250,7 @@ class ConfigEnv(object):
     def CONF_SECRET_KEY(self):
         return 'OVESETUP_GRAFANA_CONFIG/confSecretKey'
 
-    # This refers to grafana's internal databse, which is
+    # This refers to grafana's internal database, which is
     # (also by default) an sqlite3 db file at
     # /var/lib/grafana/grafana.db . It's considered "new"
     # if it's missing or with size 0.
