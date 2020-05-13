@@ -198,7 +198,7 @@ class Plugin(plugin.PluginBase):
     @plugin.event(
         stage=plugin.Stages.STAGE_MISC,
         after=(
-            oengcommcons.Stages.DB_SCHEMA,
+            oengcommcons.Stages.DB_CREDENTIALS_WRITTEN,
         ),
         condition=lambda self: (
             self.environment[ogdwhcons.CoreEnv.ENABLE] and
