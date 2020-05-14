@@ -346,6 +346,7 @@ fi
 %files setup
 %{_datadir}/ovirt-engine/setup/ovirt_engine_setup/dwh/
 %{_datadir}/ovirt-engine/setup/plugins/*/ovirt-engine-dwh/
+%{_sysconfdir}/grafana/conf/
 
 %files grafana-integration-setup
 %{_datadir}/ovirt-engine/setup/ovirt_engine_setup/grafana_dwh/
