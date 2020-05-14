@@ -170,15 +170,25 @@ class FileLocations(object):
         'conf',
         'provisioning',
     )
-    GRAFANA_PROVISIONING_CONFIGURATION_DWH = os.path.join(
+    GRAFANA_PROVISIONING_DWH_DATASOURCE = os.path.join(
         GRAFANA_PROVISIONING_CONFIGURATION,
         'datasources',
         'ovirt-dwh.yaml',
     )
-    GRAFANA_PROVISIONING_CONFIGURATION_DWH_TEMPLATE = os.path.join(
+    GRAFANA_PROVISIONING_DWH_DATASOURCE_TEMPLATE = os.path.join(
         PKG_DATA_DIR,
         'conf',
         'grafana-dwh-data-source.template',
+    )
+    GRAFANA_PROVISIONING_DWH_DASHBOARDS = os.path.join(
+        GRAFANA_PROVISIONING_CONFIGURATION,
+        'dashboards',
+        'ovirt-dwh-dashboards-conf.yaml',
+    )
+    GRAFANA_PROVISIONING_DWH_DASHBOARDS_TEMPLATE = os.path.join(
+        PKG_DATA_DIR,
+        'conf',
+        'grafana-dwh-dashboards-conf.template',
     )
     # This keeps Grafana user database credentials.
     # Nothing should use it except for engine-setup, which uses it to

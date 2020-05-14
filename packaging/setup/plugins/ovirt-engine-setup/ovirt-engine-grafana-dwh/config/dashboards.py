@@ -27,7 +27,6 @@ from otopi import plugin
 from ovirt_engine import util as outil
 
 from ovirt_engine_setup import constants as osetupcons
-from ovirt_engine_setup.dwh import constants as odwhcons
 from ovirt_engine_setup.grafana_dwh import constants as ogdwhcons
 
 
@@ -45,7 +44,7 @@ class Plugin(plugin.PluginBase):
         stage=plugin.Stages.STAGE_MISC,
         condition=lambda self: self.environment[ogdwhcons.CoreEnv.ENABLE],
     )
-    def _misc_grafana_datasource_config(self):
+    def _misc_grafana_dashboards_config(self):
         uninstall_files = []
         self.environment[
             osetupcons.CoreEnv.REGISTER_UNINSTALL_GROUPS
@@ -53,20 +52,11 @@ class Plugin(plugin.PluginBase):
             group='ovirt_grafana_files',
             fileList=uninstall_files,
         )
-        substs = {}
-        for e, k in (
-            (odwhcons.DBEnv.HOST, 'GRAFANA_DB_HOST'),
-            (odwhcons.DBEnv.PORT, 'GRAFANA_DB_PORT'),
-            (ogdwhcons.GrafanaDBEnv.USER, 'GRAFANA_DB_USER'),
-            (ogdwhcons.GrafanaDBEnv.PASSWORD, 'GRAFANA_DB_PASSWORD'),
-            (odwhcons.DBEnv.DATABASE, 'GRAFANA_DB_DATABASE'),
-        ):
-            substs['@{}@'.format(k)] = self.environment[e]
         self.environment[otopicons.CoreEnv.MAIN_TRANSACTION].append(
             filetransaction.FileTransaction(
                 name=(
                     ogdwhcons.FileLocations.
-                    GRAFANA_PROVISIONING_DWH_DATASOURCE
+                    GRAFANA_PROVISIONING_DWH_DASHBOARDS
                 ),
                 mode=0o640,
                 owner='root',
@@ -75,9 +65,9 @@ class Plugin(plugin.PluginBase):
                 content=outil.processTemplate(
                     template=(
                         ogdwhcons.FileLocations.
-                        GRAFANA_PROVISIONING_DWH_DATASOURCE_TEMPLATE
+                        GRAFANA_PROVISIONING_DWH_DASHBOARDS_TEMPLATE
                     ),
-                    subst=substs,
+                    subst={},
                 ),
                 modifiedList=uninstall_files,
             )
