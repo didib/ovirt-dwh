@@ -4,7 +4,7 @@ apiVersion: 1
 providers:
 - name: oVirt DWH Dashboards
   orgId: 1
-  folder: 'main'
+  folder: 'oVirt Embedded Dashboards'
   folderUid: ''
   type: file
   disableDeletion: false
@@ -12,4 +12,4 @@ providers:
   updateIntervalSeconds: 10
   allowUiUpdates: false
   options:
-    path: /usr/share/ovirt-engine-dwh/conf/grafana-dashboards
+    path: /usr/share/ovirt-engine-dwh/conf/grafana-dashboards/overview

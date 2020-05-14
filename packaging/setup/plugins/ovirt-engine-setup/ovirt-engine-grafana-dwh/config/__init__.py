@@ -21,14 +21,12 @@
 
 from otopi import util
 
-from . import dashboards
 from . import database
 from . import datasource
 
 
 @util.export
 def createPlugins(context):
-    dashboards.Plugin(context=context)
     database.Plugin(context=context)
     datasource.Plugin(context=context)
 
