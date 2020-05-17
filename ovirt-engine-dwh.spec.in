@@ -346,11 +346,11 @@ fi
 %files setup
 %{_datadir}/ovirt-engine/setup/ovirt_engine_setup/dwh/
 %{_datadir}/ovirt-engine/setup/plugins/*/ovirt-engine-dwh/
-%{_sysconfdir}/grafana/conf/
 
 %files grafana-integration-setup
 %{_datadir}/ovirt-engine/setup/ovirt_engine_setup/grafana_dwh/
 %{_datadir}/ovirt-engine/setup/plugins/*/ovirt-engine-grafana-dwh/
+%{_sysconfdir}/grafana/conf/
 
 %changelog
 * Tue Apr 07 2020 Shirly Radco <sradco@redhat.com> - 4.4.0.2
